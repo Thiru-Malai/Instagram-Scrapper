@@ -2,3 +2,10 @@
 asyncmain.py
 bamba.json
 index.py
+*.json
+main2.py
+main3.py
+main4.py
+new.py
+index.py
+__pycache__

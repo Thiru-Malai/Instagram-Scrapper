@@ -1,62 +1,103 @@
-from playwright.sync_api import sync_playwright
+import requests
 import json
 from time import sleep
+import numpy
+import re
+from Getuserdata import main
 
-SESSIONID = "63694293363:UQdy1oqqybUDUq:11:AYe50Zx0LGJfnW4y-zEYpfvFkZSPMdv2QaT5OVRSjQ"
-headers = { 
-  "cookie":f'sessionid={SESSIONID};'
+#api
+url = "https://www.instagram.com/api/v1/clips/music/"
+
+# global variables
+# video_id = "1322610878461284"
+sessionId = "63694293363:BX18ThrpjBmExz:29:AYcHshaGNwKZ6LHzMB61bLjcmyvZ9K4k7VuWKRCabw"
+csrftoken = "TCxi1uzVXDDkMfBLVRgbg88yP8COEUvL"
+
+max_id = ""
+next_available = True
+total = 0
+last_length = 1
+json_data = {}
+v_count = 0
+
+headers = {
+    "X-Asbd-Id": "129477",
+    "X-Csrftoken": csrftoken,
+    "X-Ig-App-Id": "936619743392459",
+    "X-Requested-With": "XMLHttpRequest",
+    "Cookie": f"csrftoken={csrftoken};sessionid={sessionId};",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 }
 
-j = json.loads('{}')
-res = []
-index = 1
-totalCount = 0
+# Parsing Data
+def getData(reels_data, filepath, filename):
+    result = []
+    for i in range(len(reels_data['items'])):
+        username = reels_data['items'][i]['media']["owner"]["username"]
+        code = reels_data['items'][i]['media']["code"]
 
-def check(response):
-    if "music" in response.url:
-      data = response.json()
+        # Profile Scrapping
+        data = {}
+        infos, other_infos = main(username, sessionId)
+        
+        if other_infos["error"] == "rate limit":
+            sleep(60)
+            print("Rate limit please wait a few minutes before you try again")
+        else:
+            if "obfuscated_email" in other_infos["user"].keys():
+                if other_infos["user"]["obfuscated_email"]:
+                    data['obfuscated_email'] = other_infos["user"]["obfuscated_email"]
+        
+        data["username"] = username
+        data["reelsUrl"] = "https://www.instagram.com/reel/"+code
+        data["followers"] = infos["follower_count"]
+        data["following_count"] = infos["following_count"]
+        data["postsCount"] = infos["media_count"]
+        if infos["external_url"]:
+            data["profileUrl"] = infos["external_url"]
+        if "public_email" in infos.keys():
+            if infos["public_email"]:
+                data["descEmail"] = infos["public_email"]
+            else:
+                data["descEmail"] = "Null"
+        result.append(data)
 
-      global index, totalCount
-      index = len(data['items'])
-      if(index == 0):
-        exit()
-      totalCount = totalCount + index
-      print('Total Count', totalCount)
-      print(len(data['items']))
+        sleep(1.0 + numpy.random.uniform(0,3))
+    
+    with open(filepath, "r") as file:
+        json_data = json.load(file)
+        json_data['userDetails'].extend(result)
+        json.dump(json_data,open(filename, "w"))
 
-      for i in range(index): 
-        code = data['items'][i]['media']["code"]
-        username = data['items'][i]['media']["owner"]["username"]
-        profile = "https://www.instagram.com/"+username
-        reel = "https://www.instagram.com/reel/"+code
-        value = []
-        value.append(username)
-        value.append(profile)
-        value.append(reel)
-        if value not in res:
-          res.append(value)
-      json.dump(res,open("result.json", "w"))
-      # sleep(1)
-      
-      # try:
-      # j.update(response.json())
-      # except:
-      #   print("error")
-      #   return
 
-with sync_playwright() as p:
-  browser = p.firefox.launch(headless=False)
-  page = browser.new_page(extra_http_headers=headers)
-  page.on("response", lambda response: check(response))
-  
-  page.goto("https://www.instagram.com/reels/audio/1088122805511195/")
-  sleep(2)
-  # page.wait_for_timeout(2000)
-  page.wait_for_load_state("networkidle")
-  
+def main_process(video_id):
+    filename = video_id + ".json"
+    filepath = './' + filename
+    
+    # main
+    global max_id, next_available, total, last_length, json_data, v_count
+    json_data['userDetails'] = []
+    json.dump(json_data,open(filename, "w"))
 
-  while True:
+    while next_available and last_length > 0:
+        data = f'audio_cluster_id={video_id}&original_sound_audio_asset_id={video_id}&max_id={max_id}'
+        response = requests.post(url, headers=headers, data=data)
+        print(response)
+        res = response.json()
+        v_count = res['media_count']["clips_count"]
+        next_available = res["paging_info"]["more_available"]
+        max_id = res["paging_info"]["max_id"]
+        last_length = len(res['items'])
+        total += len(res['items'])
+        print(total)
+        getData(res, filepath, filename)
+        sleep(1.0 + numpy.random.uniform(0,2))
+        
+    with open(filepath, "r") as file:
+        json_data = json.load(file)
+        json_data['totalClips'] = v_count
+        json.dump(json_data,open(filename, "w"))
 
-    page.mouse.wheel(0, -2)
-    page.mouse.wheel(0, 20000)
-    sleep(2)
+    sleep(120)
+    exit()
