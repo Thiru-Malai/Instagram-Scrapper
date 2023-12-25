@@ -3,12 +3,6 @@ import requests
 from urllib.parse import quote_plus
 from json import dumps, decoder
 
-import phonenumbers
-from phonenumbers.phonenumberutil import (
-    region_code_for_country_code,
-    region_code_for_number,
-)
-import pycountry
 
 def getUserId(username,sessionsId):
     cookies = {'sessionid': sessionsId}
