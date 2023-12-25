@@ -2,7 +2,7 @@ import requests
 import json
 from time import sleep
 import numpy
-import re
+import sys
 from Getuserdata import main
 
 #api
@@ -100,4 +100,9 @@ def main_process(video_id):
         json.dump(json_data,open(filename, "w"))
 
     sleep(120)
-    exit()
+
+if len(sys.argv) > 1:
+    video_id = sys.argv[1]
+    # print(sys.argv)
+    # print(video_id)
+    main_process(video_id)
