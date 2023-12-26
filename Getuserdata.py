@@ -111,6 +111,6 @@ def main(username, sessionId):
     #             pass # pass what ??
     #         print("Public Phone number    : " + phonenr)
 
-    other_infos=advanced_lookup('gunas___bond___007')
+    # other_infos=advanced_lookup('gunas___bond___007')
     
-    return infos, other_infos
+    return infos
