@@ -39,18 +39,12 @@ def getData(reels_data, filepath, filename):
 
         # Profile Scrapping
         data = {}
-        infos, other_infos = main(username, sessionId)
-        
-        if other_infos["error"] == "rate limit":
-            sleep(60)
-            print("Rate limit please wait a few minutes before you try again")
-        else:
-            if "obfuscated_email" in other_infos["user"].keys():
-                if other_infos["user"]["obfuscated_email"]:
-                    data['obfuscated_email'] = other_infos["user"]["obfuscated_email"]
-        
+        infos = main(username, sessionId)
+
         data["username"] = username
         data["reelsUrl"] = "https://www.instagram.com/reel/"+code
+        date = reels_data['items'][i]['media']['taken_at']
+        data["takenAt"] = date
         data["followers"] = infos["follower_count"]
         data["following_count"] = infos["following_count"]
         data["postsCount"] = infos["media_count"]
@@ -86,7 +80,7 @@ def main_process(video_id):
         print(response)
         if(response.status_code == 400):
             print("Error 400")
-            sleep(120)
+            sleep(6)
             pass
         else:
             res = response.json()
@@ -97,14 +91,14 @@ def main_process(video_id):
             total += len(res['items'])
             print(total)
             getData(res, filepath, filename)
-            sleep(6.0 + numpy.random.uniform(0,2))
+            sleep(2.0 + numpy.random.uniform(0,2))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
         json_data['totalClips'] = v_count
         json.dump(json_data,open(filename, "w"))
 
-    sleep(120)
+    sleep(10 + numpy.random.uniform(10,20))
 
 if len(sys.argv) > 1:
     video_id = sys.argv[1]
