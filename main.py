@@ -80,7 +80,7 @@ def main_process(video_id):
         print(response)
         if(response.status_code == 400):
             print("Error 400")
-            sleep(8 + numpy.random.uniform(6, 20))
+            sleep(8 + numpy.random.uniform(6, 12))
             pass
         else:
             res = response.json()
@@ -91,14 +91,14 @@ def main_process(video_id):
             total += len(res['items'])
             print(total)
             getData(res, filepath, filename)
-            sleep(3.0 + numpy.random.uniform(0,2))
+            sleep(2.0 + numpy.random.uniform(0,2))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
         json_data['totalClips'] = v_count
         json.dump(json_data,open(filename, "w"))
 
-    sleep(4 + numpy.random.uniform(4, 20))
+    sleep(3 + numpy.random.uniform(4, 16))
 
 if len(sys.argv) > 1:
     video_id = sys.argv[1]
