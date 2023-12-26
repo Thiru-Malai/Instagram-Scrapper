@@ -68,49 +68,12 @@ def advanced_lookup(username):
         return({"user": None, "error": "rate limit"})
 
 def main(username, sessionId):
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('-s', '--sessionid',help="Instagram session ID",required=True)
-    # parser.add_argument('-u','--username',help="One username",required=True)
-    # args = parser.parse_args()
-
-    # sessionsId=args.sessionid
-
     infos = getInfo(username, sessionId)
     if not infos["user"]:
         exit(infos["error"])
 
     infos=infos["user"]
-    # print(infos)
-    # print("Informations about     : "+infos["username"])
-    # print("userID                 : "+infos["userID"])
-    # print("Full Name              : "+infos["full_name"])
-    # print("Verified               : "+str(infos['is_verified'])+" | Is buisness Account : "+str(infos["is_business"]))
-    # print("Is private Account     : "+str(infos["is_private"]))
-    # print("Follower               : "+str(infos["follower_count"]) + " | Following : "+str(infos["following_count"]))
-    # print("Number of posts        : "+str(infos["media_count"]))
-    # # print("Number of tag in posts : "+str(infos["following_tag_count"]))
-    # if infos["external_url"]:
-    #     print("External url           : "+infos["external_url"])
-    # # print("IGTV posts             : "+str(infos["total_igtv_videos"]))
-    # print("Biography              : "+(f"""\n{" "*25}""").join(infos["biography"].split("\n")))
+ 
+    # other_infos=advanced_lookup('gunas___bond___007')
     
-    # if "public_email" in infos.keys():
-    #     if infos["public_email"]:
-    #         print("Public Email           : "+infos["public_email"])
-
-    # if "public_phone_number" in infos.keys():
-    #     if str(infos["public_phone_number"]):
-    #         phonenr = "+"+str(infos["public_phone_country_code"])+" "+str(infos["public_phone_number"])
-    #         try:
-    #             print(phonenr)
-    #             pn = phonenumbers.parse(phonenr)
-    #             countrycode = region_code_for_country_code(pn.country_code)
-    #             country = pycountry.countries.get(alpha_2=countrycode)
-    #             phonenr = phonenr + " ({}) ".format(country.name)
-    #         except: # except what ??
-    #             pass # pass what ??
-    #         print("Public Phone number    : " + phonenr)
-
-    other_infos=advanced_lookup('gunas___bond___007')
-    
-    return infos, other_infos
+    return infos
