@@ -63,8 +63,8 @@ def getData(reels_data, filepath, filename):
                 data["descEmail"] = "Null"
         result.append(data)
 
-        sleep(1.0 + numpy.random.uniform(0,3))
-    
+        sleep(4.0 + numpy.random.uniform(0,3))
+
     with open(filepath, "r") as file:
         json_data = json.load(file)
         json_data['userDetails'].extend(result)
@@ -84,15 +84,20 @@ def main_process(video_id):
         data = f'audio_cluster_id={video_id}&original_sound_audio_asset_id={video_id}&max_id={max_id}'
         response = requests.post(url, headers=headers, data=data)
         print(response)
-        res = response.json()
-        v_count = res['media_count']["clips_count"]
-        next_available = res["paging_info"]["more_available"]
-        max_id = res["paging_info"]["max_id"]
-        last_length = len(res['items'])
-        total += len(res['items'])
-        print(total)
-        getData(res, filepath, filename)
-        sleep(1.0 + numpy.random.uniform(0,2))
+        if(response.status_code == 400):
+            print("Error 400")
+            sleep(120)
+            pass
+        else:
+            res = response.json()
+            v_count = res['media_count']["clips_count"]
+            next_available = res["paging_info"]["more_available"]
+            max_id = res["paging_info"]["max_id"]
+            last_length = len(res['items'])
+            total += len(res['items'])
+            print(total)
+            getData(res, filepath, filename)
+            sleep(6.0 + numpy.random.uniform(0,2))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
