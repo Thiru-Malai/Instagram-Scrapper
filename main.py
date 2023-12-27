@@ -92,7 +92,7 @@ def main_process(video_id):
             total += len(res['items'])
             print(total)
             getData(res, filepath, filename)
-            sleep(2.0 + numpy.random.uniform(0,2))
+            sleep(numpy.random.uniform(4,30))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
