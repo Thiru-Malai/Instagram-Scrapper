@@ -5,6 +5,8 @@ import numpy
 import sys
 from Getuserdata import main
 from datetime import datetime
+from crawlbase import CrawlingAPI
+
 
 #api
 url = "https://www.instagram.com/api/v1/clips/music/"
@@ -58,7 +60,7 @@ def getData(reels_data, filepath, filename):
                 data["descEmail"] = "Null"
         result.append(data)
 
-        sleep(1.0 + numpy.random.uniform(0,1))
+        sleep(4.0 + numpy.random.uniform(0,3))
 
     with open(filepath, "r") as file:
         json_data = json.load(file)
@@ -81,7 +83,7 @@ def main_process(video_id):
         print(response)
         if(response.status_code == 400):
             print("Error 400")
-            sleep(8 + numpy.random.uniform(6, 12))
+            sleep(60 + numpy.random.uniform(6, 12))
             pass
         else:
             res = response.json()
@@ -92,14 +94,14 @@ def main_process(video_id):
             total += len(res['items'])
             print(total)
             getData(res, filepath, filename)
-            sleep(numpy.random.uniform(4,30))
+            sleep(6.0 + numpy.random.uniform(4,20))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
         json_data['totalClips'] = v_count
         json.dump(json_data,open(filename, "w"))
 
-    sleep(3 + numpy.random.uniform(4, 16))
+    sleep(60 + numpy.random.uniform(4, 16))
 
 if len(sys.argv) > 1:
     video_id = sys.argv[1]
