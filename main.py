@@ -5,7 +5,6 @@ import numpy
 import sys
 from Getuserdata import main
 from datetime import datetime
-from crawlbase import CrawlingAPI
 
 
 #api
@@ -73,6 +72,7 @@ def main_process(video_id):
     filepath = './' + filename
     
     # main
+
     global max_id, next_available, total, last_length, json_data, v_count
     json_data['userDetails'] = []
     json.dump(json_data,open(filename, "w"))
