@@ -18,5 +18,5 @@ with open('instagram.txt', 'r') as file:
     for line in file:
         video_id = extract_video_id(line)
         if video_id is not None:
-            # print(video_id)
+            print(video_id)
             subprocess.call(['python', 'main.py', video_id])

@@ -4,6 +4,7 @@ from time import sleep
 import numpy
 import sys
 from Getuserdata import main
+from datetime import datetime
 
 #api
 url = "https://www.instagram.com/api/v1/clips/music/"
@@ -37,14 +38,14 @@ def getData(reels_data, filepath, filename):
         username = reels_data['items'][i]['media']["owner"]["username"]
         code = reels_data['items'][i]['media']["code"]
         date = reels_data['items'][i]['media']['taken_at']
-
+        datetime_obj = datetime.fromtimestamp(date)
         # Profile Scrapping
         data = {}
         infos = main(username, sessionId)
         
         data["username"] = username
         data["reelsUrl"] = "https://www.instagram.com/reel/"+code
-        data["upload_data"] = date
+        data["upload_date"] = datetime_obj
         data["followers"] = infos["follower_count"]
         data["following_count"] = infos["following_count"]
         data["postsCount"] = infos["media_count"]
