@@ -45,7 +45,7 @@ def getData(reels_data, filepath, filename):
         
         data["username"] = username
         data["reelsUrl"] = "https://www.instagram.com/reel/"+code
-        data["upload_date"] = datetime_obj
+        data["upload_date"] = str(datetime_obj)
         data["followers"] = infos["follower_count"]
         data["following_count"] = infos["following_count"]
         data["postsCount"] = infos["media_count"]
