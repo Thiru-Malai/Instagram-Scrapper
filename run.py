@@ -2,21 +2,15 @@ import subprocess
 import main 
 import re
 
-def extract_video_id(url):
-    if '?' in url:
-        url = url.split('?')[0] + '/'
-    pattern = r'/(\d+)/'
-    match = re.search(pattern, url)
-
+def extract_audio_ids(url):
+    match = re.search(r'/audio/(\d+)', url)
     if match:
-        video_id = match.group(1)
-        return video_id
-    else:
-        return None
+        audio_id = match.group(1)
+    return audio_id
 
 with open('instagram.txt', 'r') as file:
     for line in file:
-        video_id = extract_video_id(line)
+        video_id = extract_audio_ids(line)
         if video_id is not None:
             print(video_id)
             subprocess.call(['python', 'main.py', video_id])
