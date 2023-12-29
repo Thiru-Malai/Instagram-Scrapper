@@ -55,6 +55,14 @@ def getData(reels_data, filepath, filename):
         payload = f"username={username}"
         profile_response = requests.get(profile_api+username, headers=headers_profile, data=payload)
         print(profile_response.status_code)
+        if(profile_response.status_code == 400):
+            print("Error 400")
+            sleep(120 + numpy.random.uniform(6, 12))
+            pass
+        if(profile_response.status_code == 429):
+            print("Error 429 Too Many Requests")
+            sleep(120 + numpy.random.uniform(6, 12))
+            pass
         profile_data = profile_response.json()
 
         # Data Extraction
@@ -83,7 +91,7 @@ def getData(reels_data, filepath, filename):
         
         result.append(data)
 
-        sleep(4.0 + numpy.random.uniform(2,10))
+        sleep(5.0 + numpy.random.uniform(2,10))
 
     with open(filepath, "r") as file:
         json_data = json.load(file)
@@ -110,6 +118,11 @@ def main_process(video_id):
         print(response)
         if(response.status_code == 400):
             print("Error 400")
+            sleep(60 + numpy.random.uniform(6, 12))
+            pass
+        if(response.status_code == 429):
+            json.dump(json_data,open(j, "w"))
+            print("Error 429 Too Many Requests")
             sleep(60 + numpy.random.uniform(6, 12))
             pass
         else:
