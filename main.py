@@ -76,7 +76,7 @@ def getData(reels_data, filepath, filename):
         data["followers_count"] = followers
         data['following_count'] = following
         data["externalUrl"] = external_url
-        data['bioLinksUrl'] = bio
+        data['bio'] = bio
         data["descEmail"] = descEmail
         data["postsCount"] = post_count
         data["upload_date"] = str(datetime_obj)

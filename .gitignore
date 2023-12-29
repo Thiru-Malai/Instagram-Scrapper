@@ -9,3 +9,5 @@ main4.py
 new.py
 index.py
 __pycache__
+*.zip
+BackUp
