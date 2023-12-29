@@ -2,7 +2,7 @@ import argparse
 import requests
 from urllib.parse import quote_plus
 from json import dumps, decoder
-
+from time import sleep
 
 def getUserId(username,sessionsId):
     cookies = {'sessionid': sessionsId}
@@ -26,16 +26,22 @@ def getInfo(username,sessionId):
     userId = getUserId(username, sessionId)
     if userId["error"]:
         return userId
-
-    response = requests.get(
-        f'https://i.instagram.com/api/v1/users/{userId["id"]}/info/',
-        headers={'User-Agent': 'Instagram 64.0.0.14.96'},
-        cookies={'sessionid': sessionId}
-    ).json()["user"]
-    
+    try:
+        response = requests.get(
+            f'https://i.instagram.com/api/v1/users/{userId["id"]}/info/',
+            headers={'User-Agent': 'Instagram 64.0.0.14.96'},
+            cookies={'sessionid': sessionId}
+        ).json()['user']
+    except decoder.JSONDecodeError:
+        sleep(10)
+        return {"user": None, "error": "Rate limit", "username": username}
+    except KeyError:
+        print('KeyError')
+        print(username)
+        return {"user": None, "error": "Rate limit", "username": username}
     infoUser = response
     infoUser["userID"] = userId["id"]
-    
+    sleep(0.5)
     return {"user":infoUser, "error":None}
 
 def advanced_lookup(username):
