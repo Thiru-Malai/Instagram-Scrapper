@@ -83,7 +83,7 @@ def getData(reels_data, filepath, filename):
         
         result.append(data)
 
-        sleep(4.0 + numpy.random.uniform(0,3))
+        sleep(4.0 + numpy.random.uniform(2,10))
 
     with open(filepath, "r") as file:
         json_data = json.load(file)
@@ -96,6 +96,9 @@ def main_process(video_id):
     filepath = './' + filename
     
     # main
+    j = {}
+    with open(filepath, "r") as file:
+        j = json.load(file)
 
     global max_id, next_available, total, last_length, json_data, v_count
     json_data['userDetails'] = []
@@ -118,14 +121,14 @@ def main_process(video_id):
             total += len(res['items'])
             print(total)
             getData(res, filepath, filename)
-            sleep(6.0 + numpy.random.uniform(4,20))
+            sleep(12.0 + numpy.random.uniform(4,20))
         
     with open(filepath, "r") as file:
         json_data = json.load(file)
         json_data['totalClips'] = v_count
         json.dump(json_data,open(filename, "w"))
 
-    sleep(60 + numpy.random.uniform(4, 16))
+    sleep(60 + numpy.random.uniform(10, 30))
 
 if len(sys.argv) > 1:
     video_id = sys.argv[1]
